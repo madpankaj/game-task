@@ -31,7 +31,8 @@ for(i = 0; i < n; i++){
         var textnode = document.createTextNode("");
         node.appendChild(textnode); 
         node.setAttribute('id',""+i+j) ;
-        node.setAttribute('class',cls) ;     
+        node.setAttribute('class',cls) ;
+        node.setAttribute('data-val',n_numberArray[i][j]) ;     
         document.getElementById("myList").appendChild(node);
         
         counter++;
@@ -45,6 +46,7 @@ function updateBoxColor(){
                 n_numberArray[i][j] = 1;
                 var element = document.getElementById(`${i}${j}`);
                 element.classList.add("active");
+                element.setAttribute('data-val',1);
                 unColoredBoxes--;
                 console.log('coloredBoxes '+unColoredBoxes)
                 console.log('totalBoxes '+totalBoxes)
@@ -72,23 +74,36 @@ function checkGameStatus(){
     }
 }
 var Interval = window.setInterval(checkGameStatus,timeInterval*1000);
-//var ul = document.getElementById('test');
-function makeBoxUnColored(){
+
+
    
-    document.getElementById("myList").onclick = function(event) {
-        var target = getEventTarget(event);
-        var elementId = target.getAttribute('id');
+document.getElementById("myList").onclick = function(event) {
+    var target = getEventTarget(event);
+    var elementId = target.getAttribute('id');
+    var dVal = target.getAttribute('data-val');
+    if(dVal == 1){
         arrPostion = elementId.toString().split("");
         var element = document.getElementById(target.getAttribute('id'));
         element.classList.remove("active");
         n_numberArray [arrPostion[0]][arrPostion[1]] = 0
+        console.log(n_numberArray [arrPostion[0]][arrPostion[1]])
         unColoredBoxes++;
-        console.log(coloredBoxes)
-        
-    };
-}
+        if(unColoredBoxes == totalBoxes){
+            clearInterval(Interval);
+            alert('yea , you won the game');
+        }
+        else if(unColoredBoxes == 0){
+            alert('You lost the game');
+            clearInterval(Interval);
+        }
+    }
+   
+    
+    
+};
+
 function getEventTarget(e) {
     e = e || window.event;
     return e.target || e.srcElement; 
 }
-makeBoxUnColored()
+
